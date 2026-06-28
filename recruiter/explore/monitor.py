@@ -17,7 +17,7 @@ from rich.live import Live
 from rich.text import Text
 from rich.tree import Tree
 
-from resumekit import ui
+from recruiter import ui
 
 
 class Status(str, Enum):

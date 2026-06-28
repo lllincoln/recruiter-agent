@@ -16,7 +16,7 @@ from urllib.parse import urlparse
 
 import httpx
 
-from resumekit.settings import settings
+from recruiter.settings import settings
 
 
 @dataclass

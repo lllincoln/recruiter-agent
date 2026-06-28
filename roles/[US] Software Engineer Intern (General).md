@@ -338,9 +338,17 @@ Verdict: **Exemplary / Accomplished / Developing / Beginning / Missing**
 
 Overall Verdict: **Exemplary / Accomplished / Developing / Beginning / Missing**
 
-## Strengths (1-5 examples)
-- **Strength**: Short, encouraging note on what was done well (1-2 sentences).
+## Strengths
+- **Summary of Strength**: Short, encouraging note on what was done well (1-2 sentences).
+- Strength 2
+- Strength 3
+- Strength 4
+- Strength N
 
-## Recommendations (as many examples as necessary - can be 1-2, can be 3-5, can be 10-25)
-- **Recommendation**: Why it matters, then how to fix it — with copy-pasteable examples or concrete projects/programs to pursue (3-4 sentences).
+## Recommendations
+- **Summary of Recommendation**: Why it matters, then how to fix it — with copy-pasteable examples or concrete projects/programs to pursue (3-4 sentences).
+- Recommendation 2
+- Recommendation 3
+- Recommendation 4
+- Recommendation N
 ```

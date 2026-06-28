@@ -6,9 +6,9 @@ import asyncio
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
-from resumekit.explore.monitor import CrawlMonitor
-from resumekit.fetcher import Fetcher
-from resumekit.models import Profile
+from recruiter.explore.monitor import CrawlMonitor
+from recruiter.fetcher import Fetcher
+from recruiter.models import Profile
 
 
 @dataclass

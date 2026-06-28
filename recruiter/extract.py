@@ -7,7 +7,7 @@ from pathlib import Path
 
 from pypdf import PdfReader
 
-from resumekit.models import Link, LinkKind
+from recruiter.models import Link, LinkKind
 
 # Bare URLs and www. links found in the visible text.
 _URL_RE = re.compile(

@@ -14,17 +14,17 @@ from typing import TYPE_CHECKING
 import httpx
 
 if TYPE_CHECKING:
-    from resumekit.handlers import ExploreContext
+    from recruiter.handlers import ExploreContext
 
-from resumekit import ui
-from resumekit.settings import settings
-from resumekit.explore.monitor import CrawlMonitor
-from resumekit.extract import extract
-from resumekit.fetcher import Fetcher
-from resumekit.models import LinkKind, Profile
+from recruiter import ui
+from recruiter.settings import settings
+from recruiter.explore.monitor import CrawlMonitor
+from recruiter.extract import extract
+from recruiter.fetcher import Fetcher
+from recruiter.models import LinkKind, Profile
 
 # NOTE: handlers are imported lazily inside the functions below to avoid an
-# import cycle (handlers import resumekit.explore.dispatch).
+# import cycle (handlers import recruiter.explore.dispatch).
 
 # Kinds worth exploring (everything else is just recorded as a resume link).
 _EXPLORE_KINDS = {
@@ -58,7 +58,7 @@ async def dispatch(url: str, parent: str | None, depth: int, ctx: "ExploreContex
             return  # already shown elsewhere; its status is the source of truth
     if not await ctx.claim(url):
         return
-    from resumekit.handlers import handler_for  # lazy: breaks import cycle
+    from recruiter.handlers import handler_for  # lazy: breaks import cycle
 
     kind = _classify_runtime(url)
     await handler_for(kind).expand(url, depth, ctx)
@@ -66,7 +66,7 @@ async def dispatch(url: str, parent: str | None, depth: int, ctx: "ExploreContex
 
 def _classify_runtime(url: str) -> LinkKind:
     # Reuse the extractor's classifier so crawled-up links route correctly.
-    from resumekit.extract import classify
+    from recruiter.extract import classify
 
     return classify(url)
 
@@ -91,7 +91,7 @@ async def _build_profile(pdf_path: Path) -> Profile:
     for link in roots:
         monitor.add_root(link.url, link.kind.value)
 
-    from resumekit.handlers import ExploreContext  # lazy: breaks import cycle
+    from recruiter.handlers import ExploreContext  # lazy: breaks import cycle
 
     async with httpx.AsyncClient(
         timeout=settings.request_timeout, follow_redirects=True

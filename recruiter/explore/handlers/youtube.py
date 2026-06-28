@@ -5,9 +5,9 @@ from __future__ import annotations
 import asyncio
 import re
 
-from resumekit.explore.monitor import Status
-from resumekit.handlers.base import ExploreContext, Handler
-from resumekit.models import YouTubeVideo
+from recruiter.explore.monitor import Status
+from recruiter.explore.handlers.base import ExploreContext, Handler
+from recruiter.models import YouTubeVideo
 
 _ID_RES = [
     re.compile(r"[?&]v=([A-Za-z0-9_-]{11})"),
@@ -32,7 +32,6 @@ class YouTubeHandler(Handler):
             return
 
         ctx.monitor.set_status(url, Status.fetching, detail="transcript")
-
         try:
             text = await asyncio.to_thread(self._transcript, vid)
         except Exception as e:  # noqa: BLE001 - transcripts are flaky
@@ -61,4 +60,5 @@ class YouTubeHandler(Handler):
             snippets = getattr(fetched, "snippets", fetched)
             return " ".join(s.text for s in snippets)
         except (TypeError, AttributeError):  # older classmethod API
-            return "Error while fetching the transcript of a YouTube video."
+            data = YouTubeTranscriptApi.get_transcript(video_id)
+            return " ".join(d["text"] for d in data)

@@ -3,8 +3,7 @@
 The user node gets one child per owned repo (shown in the tree). Each repo is
 deep-fetched concurrently for languages, README excerpt, and counts. External
 contributions (commits to repos the user doesn't own) are discovered via the
-search APIs (commits, pull requests, and issues). All requests go through the
-shared rate-limited Fetcher.
+commit-search API. All requests go through the shared rate-limited Fetcher.
 """
 
 from __future__ import annotations
@@ -15,15 +14,10 @@ import re
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 
-from resumekit.settings import settings
-from resumekit.explore.monitor import Status
-from resumekit.handlers.base import ExploreContext, Handler
-from resumekit.models import (
-    ContributionKind,
-    GitHubContribution,
-    GitHubProfile,
-    GitHubRepository,
-)
+from recruiter.settings import settings
+from recruiter.explore.monitor import Status
+from recruiter.explore.handlers.base import ExploreContext, Handler
+from recruiter.models import GitHubContribution, GitHubProfile, GitHubRepository
 
 API = "https://api.github.com"
 _USER_RE = re.compile(r"github\.com/([^/?#]+)", re.IGNORECASE)
@@ -58,7 +52,6 @@ class GitHubHandler(Handler):
 
         ctx.monitor.set_status(url, Status.fetching)
         user = await self._json(ctx, f"{API}/users/{username}")
-
         if not user:
             ctx.monitor.set_status(url, Status.error, detail="user not found")
             return
@@ -71,10 +64,8 @@ class GitHubHandler(Handler):
             ctx.monitor.discover(repo_url, parent=url, depth=depth + 1)
             ctx.monitor.set_status(repo_url, Status.fetching)
             repo = _base_repo(raw)
-
             if settings.github_deep_all_repos and not raw.get("fork"):
                 await self._deepen(ctx, repo, raw)
-                
             stars = f"⭐{repo.stars}" if repo.stars else ""
             lang = repo.language or ""
             ctx.monitor.set_status(
@@ -157,88 +148,33 @@ class GitHubHandler(Handler):
     async def _fetch_contributions(
         self, ctx, username, owned: list[GitHubRepository]
     ) -> list[GitHubContribution]:
-        """Discover external contributions: commits, pull requests, and issues.
-
-        Each is its own search query; we keep one record per item (not a
-        per-repo aggregate) so the scorer can weigh titles, comment counts,
-        merge status, etc.
-        """
         owned_names = {r.full_name.lower() for r in owned}
-        commits, prs, issues = await asyncio.gather(
-            self._search_commits(ctx, username, owned_names),
-            self._search_issues(ctx, username, owned_names, is_pr=True),
-            self._search_issues(ctx, username, owned_names, is_pr=False),
-        )
-        return commits + prs + issues
-
-    async def _search_commits(
-        self, ctx, username, owned_names: set[str]
-    ) -> list[GitHubContribution]:
         data = await self._json(
             ctx,
             f"{API}/search/commits",
             {"q": f"author:{username}", "per_page": 100,
              "sort": "author-date", "order": "desc"},
         )
-        out: list[GitHubContribution] = []
-        for item in (data or {}).get("items", []):
+        if not data:
+            return []
+        counts: Counter[str] = Counter()
+        stars: dict[str, int] = {}
+        urls: dict[str, str] = {}
+        for item in data.get("items", []):
             repo = item.get("repository") or {}
             full = repo.get("full_name")
             if not full or full.lower() in owned_names:
                 continue
-            commit = item.get("commit") or {}
-            message = (commit.get("message") or "").splitlines()
-            out.append(GitHubContribution(
-                kind=ContributionKind.commit,
-                repo_full_name=full,
-                repo_stars=repo.get("stargazers_count", 0),
-                url=item.get("html_url", ""),
-                title=message[0] if message else "",
-                created_at=(commit.get("author") or {}).get("date"),
-            ))
-            if len(out) >= settings.github_max_contributions:
-                break
-        return out
-
-    async def _search_issues(
-        self, ctx, username, owned_names: set[str], *, is_pr: bool
-    ) -> list[GitHubContribution]:
-        kind_q = "is:pull-request" if is_pr else "is:issue"
-        data = await self._json(
-            ctx,
-            f"{API}/search/issues",
-            {"q": f"author:{username} {kind_q}", "per_page": 100,
-             "sort": "created", "order": "desc"},
-        )
-        out: list[GitHubContribution] = []
-        for item in (data or {}).get("items", []):
-            full = _full_name_from_repo_url(item.get("repository_url", ""))
-            if not full or full.lower() in owned_names:
-                continue
-            pr = item.get("pull_request") or {}
-            out.append(GitHubContribution(
-                kind=ContributionKind.pull_request if is_pr else ContributionKind.issue,
-                repo_full_name=full,
-                url=item.get("html_url", ""),
-                title=item.get("title", ""),
-                created_at=item.get("created_at"),
-                state=item.get("state"),
-                merged=bool(pr.get("merged_at")) if is_pr else None,
-                comments=item.get("comments", 0),
-            ))
-            if len(out) >= settings.github_max_contributions:
-                break
-        return out
-
-
-def _full_name_from_repo_url(repo_url: str) -> str | None:
-    """``https://api.github.com/repos/owner/name`` -> ``owner/name``.
-
-    The issue/PR search results don't embed a repository object, only this
-    API URL, so we recover the ``owner/name`` slug from its tail.
-    """
-    m = re.search(r"/repos/([^/]+/[^/]+)/?$", repo_url)
-    return m.group(1) if m else None
+            counts[full] += 1
+            stars[full] = repo.get("stargazers_count", 0)
+            urls[full] = repo.get("html_url", "")
+        return [
+            GitHubContribution(
+                repo_full_name=f, commits=n,
+                repo_stars=stars.get(f, 0), url=urls.get(f, ""),
+            )
+            for f, n in counts.most_common(25)
+        ]
 
 
 def _base_repo(r: dict) -> GitHubRepository:

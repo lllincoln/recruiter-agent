@@ -1,4 +1,4 @@
-"""resumekit command-line interface."""
+"""recruiter command-line interface."""
 
 from __future__ import annotations
 
@@ -9,15 +9,15 @@ from typing import Optional
 import typer
 from dotenv import load_dotenv
 
-from resumekit import ui
-from resumekit.settings import settings
-from resumekit.explore import build_profile
+from recruiter import ui
+from recruiter.settings import settings
+from recruiter.explore import build_profile
 
 load_dotenv()
 
 app = typer.Typer(
     add_completion=False,
-    help="📄 ResumeKit — Evaluate and improve your resume.",
+    help="🕵️ Recruiter Agent — Score candidates against the evidence.",
     rich_markup_mode="rich",
 )
 
@@ -38,7 +38,7 @@ def score(
     if model:
         settings.model = model
 
-    from resumekit.scoring import capabilities, list_roles, score_stream  # lazy
+    from recruiter.scoring import capabilities, list_roles, score_stream  # lazy
 
     selected = _pick_role(list_roles(), role)
 

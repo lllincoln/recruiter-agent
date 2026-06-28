@@ -4,19 +4,19 @@ Each node in the crawl tree is processed by a :class:`Handler` chosen by URL.
 Web links are crawled; GitHub links are expanded via the REST API; YouTube
 links yield a transcript; others (HuggingFace, npm, …) are stubs for now.
 
-All handlers fetch through the shared :class:`~resumekit.fetcher.Fetcher`, so
+All handlers fetch through the shared :class:`~recruiter.fetcher.Fetcher`, so
 duplicate URLs are coalesced into one request and cached, and every host is
 rate-limited independently.
 """
 
 from __future__ import annotations
 
-from resumekit.explore.handlers.base import ExploreContext, Handler
-from resumekit.explore.handlers.github import GitHubHandler
-from resumekit.explore.handlers.stub import StubHandler
-from resumekit.explore.handlers.web import WebHandler
-from resumekit.explore.handlers.youtube import YouTubeHandler
-from resumekit.models import LinkKind
+from recruiter.explore.handlers.base import ExploreContext, Handler
+from recruiter.explore.handlers.github import GitHubHandler
+from recruiter.explore.handlers.stub import StubHandler
+from recruiter.explore.handlers.web import WebHandler
+from recruiter.explore.handlers.youtube import YouTubeHandler
+from recruiter.models import LinkKind
 
 # Kind -> handler instance. Stub handlers record the link but do nothing deep.
 _HANDLERS: dict[LinkKind, Handler] = {

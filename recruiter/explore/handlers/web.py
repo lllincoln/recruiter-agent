@@ -7,10 +7,10 @@ from urllib.parse import urldefrag, urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
-from resumekit.settings import settings
-from resumekit.explore.monitor import Status
-from resumekit.handlers.base import ExploreContext, Handler
-from resumekit.models import CrawledPage, LinkKind, SiteExploration
+from recruiter.settings import settings
+from recruiter.explore.monitor import Status
+from recruiter.explore.handlers.base import ExploreContext, Handler
+from recruiter.models import CrawledPage, LinkKind, SiteExploration
 
 _BLOG_HINTS = ("/blog", "/post", "/posts", "/article", "/writing", "/notes")
 _SKIP_EXT = (".pdf", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".zip", ".css", ".js")
@@ -79,7 +79,7 @@ class WebHandler(Handler):
             if _same_site(url, child):
                 children.append(child)
         # Deduped recursion happens via the dispatcher in explore/__init__.
-        from resumekit.explore import dispatch  # late import to avoid cycle
+        from recruiter.explore import dispatch  # late import to avoid cycle
 
         await asyncio.gather(
             *(dispatch(c, url, depth + 1, ctx) for c in children)

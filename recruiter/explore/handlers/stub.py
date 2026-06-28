@@ -6,9 +6,9 @@ not deeply explored. Replace with real handlers later.
 
 from __future__ import annotations
 
-from resumekit.explore.monitor import Status
-from resumekit.handlers.base import ExploreContext, Handler
-from resumekit.models import LinkKind
+from recruiter.explore.monitor import Status
+from recruiter.explore.handlers.base import ExploreContext, Handler
+from recruiter.models import LinkKind
 
 
 class StubHandler(Handler):

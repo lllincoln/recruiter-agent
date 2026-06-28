@@ -20,8 +20,8 @@ from typing import Iterator, Literal
 import litellm
 import pymupdf
 
-from resumekit.settings import settings
-from resumekit.models import Profile
+from recruiter.settings import settings
+from recruiter.models import Profile
 
 
 @dataclass(frozen=True)

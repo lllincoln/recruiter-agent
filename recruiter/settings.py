@@ -1,4 +1,4 @@
-"""Runtime configuration for resumekit, loaded from env / .env."""
+"""Runtime configuration for recruiter, loaded from env / .env."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     """All tunable knobs. Reads from environment and a local .env file."""
 
     model_config = SettingsConfigDict(
-        env_prefix="RESUMEKIT_",
+        env_prefix="RECRUITER_",
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     crawl_max_pages: int = 40
     request_timeout: float = 20.0
     max_concurrency: int = 8
-    user_agent: str = "resumekit/1.0 (+https://github.com/lllincoln/resume-kit)"
+    user_agent: str = "recruiter-agent/1.0 (+https://github.com/lllincoln/recruiter-agent)"
 
     # --- Per-host rate limiting (requests/sec) ---
     host_rate_per_sec: float = 4.0  # generic web hosts

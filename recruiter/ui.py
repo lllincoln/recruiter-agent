@@ -18,7 +18,7 @@ from rich.progress import (
 from rich.table import Table
 from rich.text import Text
 
-from resumekit.models import Profile
+from recruiter.models import Profile
 
 console = Console()
 

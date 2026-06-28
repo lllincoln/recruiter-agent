@@ -1,5 +1,5 @@
 [project]
-name = "resumekit"
+name = "recruiter"
 version = "0.1.0"
 description = "Explore a resume's online footprint and score the candidate."
 readme = "README.md"
@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.scripts]
-resumekit = "resumekit.cli:main"
+recruiter-agent = "recruiter.cli:main"
 
 [build-system]
 requires = ["hatchling"]
