@@ -1,0 +1,26 @@
+[project]
+name = "resumekit"
+version = "0.1.0"
+description = "Explore a resume's online footprint and score the candidate."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "httpx>=0.28.1",
+    "litellm>=1.55.0",
+    "pymupdf>=1.24.0",
+    "pypdf>=6.14.2",
+    "rich>=15.0.0",
+    "typer>=0.26.8",
+    "pydantic>=2.13.4",
+    "pydantic-settings>=2.14.2",
+    "python-dotenv>=1.2.2",
+    "youtube-transcript-api>=1.2.4",
+]
+
+[project.scripts]
+resumekit = "resumekit.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
