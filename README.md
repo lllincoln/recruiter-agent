@@ -95,7 +95,7 @@ Scoring runs through [LiteLLM](https://docs.litellm.ai/), so you're not locked i
 
 ## 🙏 Inspiration
 
-Recruiter Agent is inspired by [interviewstreet/hiring-agent](https://github.com/interviewstreet/hiring-agent), whose rubric and core idea got us started. We built this because we wanted something easier to set up, nicer to use, modern, and open to contributions, with room to grow well past resume scoring.
+Recruiter Agent is inspired by [the Hacker Rank ATS](https://github.com/interviewstreet/hiring-agent), whose rubric and core idea got us started. We built this because we wanted something that produced consistent results, is easier to set up, nicer to use, modern, and open to contributions, with room to grow well past resume scoring.
 
 ---
 
