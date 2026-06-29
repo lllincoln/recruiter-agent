@@ -1,6 +1,6 @@
 # 🕵️ Recruiter Agent
 
-**An open source AI recruiter that scores your resume, tells you what's working and what isn't, for any job role.**
+**An open source AI recruiter that scores your resume consistently and fairly, tells you what's working and what isn't, for any job role.**
 
 Point it at a resume and a role. It pulls every link off the resume, visits them, and builds a real picture of the candidate from their GitHub, personal site, blog, and more. Then it grades them against a rubric and hands back a verdict with specific strengths and fixes.
 
