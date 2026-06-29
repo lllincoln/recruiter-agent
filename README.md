@@ -4,6 +4,8 @@
 
 Point it at a resume and a role. It pulls every link off the resume, visits them, and builds a real picture of the candidate from their GitHub, personal site, blog, and more. Then it grades them against a rubric and hands back a verdict with specific strengths and fixes.
 
+![Recruiter Agent Demo Animation](assets/recruiteragent-animation.webp)
+
 ## 🚀 Get started
 
 ### Prerequisites
